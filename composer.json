@@ -1,0 +1,20 @@
+{
+    "name": "solo/assets",
+    "description": "Component for combining and compressing JavaScript and CSS files for Solo framework",
+    "license": "MIT",
+	"keywords": [ "minjs", "mincss", "minify", "asset",  "solo framework" ],
+    "authors": [
+        {
+            "name": "Andrey Filippov",
+            "email": "afi.work@gmail.com"
+        }
+    ],
+    "require": {
+		"php": ">=5.3.0",
+	    "linkorb/jsmin-php": "dev-master"
+    },
+
+	"autoload": {
+		"psr-0":  { "Solo": "src/" }
+	}
+}
