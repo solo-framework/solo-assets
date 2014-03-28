@@ -16,41 +16,50 @@ class Assets
 
 	public $ttl = 86400;
 
-	public $files = array();
+//	public $files = array();
+
+	public $minJS = false;
+
+	public $minCss = false;
+
+	public $debug = false;
 
 	/**
 	 * Сборка файлов
 	 *
+	 * @param string $files Список файлов через запятую
+	 *
 	 * @return string
 	 */
-	public function bind()
+	public function bind($files)
 	{
 		try
 		{
-			$this->outdir = isset($params["outdir"]) ? $params["outdir"] : "/assets";
-
 			$dr = $_SERVER["DOCUMENT_ROOT"];
 			$outDir = "{$dr}{$this->outdir}";
 
-			if (!isset($params["files"]))
+			if (!is_dir($outDir))
+				throw new \Exception("Asset directory doesn't exist {$outDir}");
+
+			if (!$files)
 				throw new \Exception ("Parameter 'files' is not defined");
 
-			$files = explode(",", trim($params["files"], ","));
-			$ttl = isset($params["ttl"]) ? intval($params["ttl"]) : 300;
+			$id = md5(str_replace(" ", "", $files));
+			$files = explode(",", trim($files, ","));
 
 			if (count($files) == 0)
 				throw new \Exception ( "You have to set a file at least");
 
-			$id = md5(str_replace(" ", "", $params["files"]));
+
 			$outputFile = "{$outDir}/{$id}.js";
 			$metaFile = "{$outDir}/{$id}.meta";
 
 			$now = time();
 			$hash = null;
 			$storedHash = null;
-			$age = 0;
+//			$age = 0;
 
-			if (!is_file($metaFile) || $ttl == 0)
+			if (!is_file($metaFile) || $this->ttl == 0)
 			{
 				list($mtimes, $fileList) = $this->generateInfo($files);
 
@@ -63,7 +72,7 @@ class Assets
 				$meta = file_get_contents($metaFile);
 
 				list($storedHash, $age) = explode(":", $meta);
-				if ((intval($age) + $ttl) < $now)
+				if ((intval($age) + $this->ttl) < $now)
 				{
 					list($mtimes, $fileList) = $this->generateInfo($files);
 					$this->writeMeta($metaFile, $mtimes, $now);

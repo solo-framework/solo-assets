@@ -12,14 +12,14 @@ namespace Solo\Web\Assets;
 
 use Solo\Core\IApplicationComponent;
 
-class SoloAdapter implements IApplicationComponent
+class SoloAdapter extends Assets implements IApplicationComponent
 {
 	/**
 	 * Инициализация компонента
 	 *
 	 * @see IApplicationComponent::initComponent()
 	 *
-	 * @return void
+	 * @return Assets
 	 **/
 	public function initComponent()
 	{
