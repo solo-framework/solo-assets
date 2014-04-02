@@ -12,15 +12,29 @@ namespace Solo\Web\Assets;
 
 class Assets
 {
+	/**
+	 * Каталог для комбинированных файлов
+	 *
+	 * @var string
+	 */
 	public $outdir = "/assets";
 
+	/**
+	 * время в секундах, через которое происходит
+	 * проверка файлов на изменение
+	 * (если 0 - проверка происходит при каждом запросе)
+	 *
+	 * @var int
+	 */
 	public $ttl = 86400;
 
-//	public $files = array();
+	/**
+	 *
+	 * @var bool
+	 */
+	public $async = false;
 
-	public $minJS = false;
-
-	public $minCss = false;
+//	public $minJS = false;
 
 	public $debug = false;
 
@@ -35,6 +49,14 @@ class Assets
 	{
 		try
 		{
+			$id = md5(str_replace(" ", "", $files));
+			$files = explode(",", trim($files, ","));
+
+			if ($this->debug)
+			{
+				return $this->generateDebugLink($files);
+			}
+
 			$dr = $_SERVER["DOCUMENT_ROOT"];
 			$outDir = "{$dr}{$this->outdir}";
 
@@ -43,9 +65,6 @@ class Assets
 
 			if (!$files)
 				throw new \Exception ("Parameter 'files' is not defined");
-
-			$id = md5(str_replace(" ", "", $files));
-			$files = explode(",", trim($files, ","));
 
 			if (count($files) == 0)
 				throw new \Exception ( "You have to set a file at least");
@@ -57,7 +76,6 @@ class Assets
 			$now = time();
 			$hash = null;
 			$storedHash = null;
-//			$age = 0;
 
 			if (!is_file($metaFile) || $this->ttl == 0)
 			{
@@ -65,7 +83,8 @@ class Assets
 
 				$this->writeMeta($metaFile, $mtimes, $now);
 				$this->compileAssets($fileList, $outputFile);
-				return "{$this->outdir}/{$id}.js?{$mtimes}";
+				return $this->generateLink($this->outdir, $id, $mtimes);
+				//return "{$this->outdir}/{$id}.js?{$mtimes}";
 			}
 			else
 			{
@@ -83,7 +102,8 @@ class Assets
 						return "{$this->outdir}/{$id}.js?{$mtimes}";
 					}
 				}
-				return "{$this->outdir}/{$id}.js?{$storedHash}";
+				return $this->generateLink($this->outdir, $id, $storedHash);
+				//return "{$this->outdir}/{$id}.js?{$storedHash}";
 			}
 		}
 		catch (\Exception $e)
@@ -98,6 +118,29 @@ class Assets
 		if (!$res)
 			throw new \Exception("Can't write meta file {$metaFile}");
 	}
+
+	protected function generateLink($outdir, $id, $timestamp)
+	{
+		$async = "";
+		if ($this->async)
+			$async = "async";
+		return "<script type='text/javascript' src='{$outdir}/{$id}.js?{$timestamp}' {$async}></script>\n";
+//		return "{$outdir}/{$id}.js?{$timestamp}";
+	}
+
+
+	protected function generateDebugLink(array $files)
+	{
+		$res = "";
+		foreach ($files as $file)
+		{
+			$res .= "<script type='text/javascript' src='{$file}'></script>\n";
+		}
+
+		return $res;
+	}
+
+
 
 	/**
 	 * @param $files

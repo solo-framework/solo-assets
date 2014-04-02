@@ -1,6 +1,6 @@
 <?php
 /**
- *
+ * Функция Smarty, реализующая генерацию HTML-кода для компонента assets
  *
  * PHP version 5
  *
@@ -55,11 +55,10 @@ class Assets extends Base
 		if (isset($params["ttl"]))
 			$assets->ttl = $params["ttl"];
 
-		return $assets->bind($files);
+		if (isset($params["async"]))
+			$assets->async = (bool)($params["async"]);
 
-//		$assetDir = isset($params["outdir"]) ? $params["outdir"] : "/assets";
-//		$files = explode(",", trim($params["files"], ","));
-//		$ttl = isset($params["ttl"]) ? intval($params["ttl"]) : 300;
+		return $assets->bind($files);
 	}
 }
 
