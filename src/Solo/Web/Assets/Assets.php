@@ -49,13 +49,12 @@ class Assets
 	{
 		try
 		{
-			$id = md5(str_replace(" ", "", $files));
+			$files = str_replace(array(" ", "\t", "\n"), "", $files);
+			$id = md5($files);
 			$files = explode(",", trim($files, ","));
 
 			if ($this->debug)
-			{
 				return $this->generateDebugLink($files);
-			}
 
 			$dr = $_SERVER["DOCUMENT_ROOT"];
 			$outDir = "{$dr}{$this->outdir}";
