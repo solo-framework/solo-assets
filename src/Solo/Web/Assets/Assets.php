@@ -39,6 +39,14 @@ class Assets
 	public $debug = false;
 
 	/**
+	 * Путь к DOCUMENT ROOT
+	 * Можно задавать вручную, по умолчанию равен $_SERVER["DOCUMENT_ROOT"]
+	 *
+	 * @var string
+	 */
+	public $documentRootDir = "";
+
+	/**
 	 * Сборка файлов
 	 *
 	 * @param string $files Список файлов через запятую
@@ -56,7 +64,11 @@ class Assets
 			if ($this->debug)
 				return $this->generateDebugLink($files);
 
-			$dr = $_SERVER["DOCUMENT_ROOT"];
+			if ($this->documentRootDir)
+				$dr = $this->documentRootDir;
+			else
+				$dr = $_SERVER["DOCUMENT_ROOT"];
+
 			$outDir = "{$dr}{$this->outdir}";
 
 			if (!is_dir($outDir))
@@ -149,7 +161,12 @@ class Assets
 	 */
 	protected function generateInfo($files)
 	{
-		$dr = $_SERVER["DOCUMENT_ROOT"];
+		if ($this->documentRootDir)
+			$dr = $this->documentRootDir;
+		else
+			$dr = $_SERVER["DOCUMENT_ROOT"];
+
+
 		$mtimes = "";
 		$fileList = array();
 
@@ -204,4 +221,3 @@ class Assets
 		}
 	}
 }
-
