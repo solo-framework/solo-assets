@@ -95,7 +95,6 @@ class Assets
 				$this->writeMeta($metaFile, $mtimes, $now);
 				$this->compileAssets($fileList, $outputFile);
 				return $this->generateLink($this->outdir, $id, $mtimes);
-				//return "{$this->outdir}/{$id}.js?{$mtimes}";
 			}
 			else
 			{
@@ -110,11 +109,10 @@ class Assets
 					if ($mtimes !== $storedHash)
 					{
 						$this->compileAssets($fileList, $outputFile);
-						return "{$this->outdir}/{$id}.js?{$mtimes}";
+						return $this->generateLink($this->outdir, $id, $mtimes);
 					}
 				}
 				return $this->generateLink($this->outdir, $id, $storedHash);
-				//return "{$this->outdir}/{$id}.js?{$storedHash}";
 			}
 		}
 		catch (\Exception $e)
