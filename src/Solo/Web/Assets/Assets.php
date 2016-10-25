@@ -202,14 +202,16 @@ class Assets
 					}
 					else
 					{
-						fwrite($fp, $content);
+						fwrite($fp, $content . "\n\n");
 					}
 				}
 				flock($fp, LOCK_UN);
+				fclose($fp);
 				return true;
 			}
 			else
 			{
+				fclose($fp);
 				throw new \Exception("Can't lock out file {$outFile}");
 			}
 		}
