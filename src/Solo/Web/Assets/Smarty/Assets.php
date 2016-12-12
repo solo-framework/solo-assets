@@ -10,7 +10,7 @@
 
 namespace Solo\Web\Assets\Smarty;
 
-use App\Application;
+use Solo\Core\ComponentRegistry;
 use Solo\Core\UI\Smarty\Plugins\Base;
 
 class Assets extends Base
@@ -43,7 +43,7 @@ class Assets extends Base
 	 */
 	public function execute($params)
 	{
-		$assets = Application::getInstance()->getComponent("solo_assets");
+		$assets = ComponentRegistry::getInstance()->getComponent("solo_assets");
 		$files = array();
 
 		if (isset($params["outdir"]))
